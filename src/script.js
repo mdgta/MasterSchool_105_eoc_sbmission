@@ -53,8 +53,6 @@ fetchAllpreadsheets().then(data => {
             if (tabName === "names") {
                 tableData.push([]);
             }
-            // tab's table row index: -1 index for the names since the titles are also included as a row there
-            const relevantIndex = i - (tabName === "names" ? 1 : 0);
             // go through all the cells in the current tab's current row
             row.c.reverse().map(cellContent => {
                 // make a <td>
@@ -89,10 +87,13 @@ fetchAllpreadsheets().then(data => {
     }
     tableData.sort((a, b) => a[0] > b[0]).forEach(cellsArray => {
         const rowEl = tr.cloneNode();
-        cellsArray.forEach(cellText => {
+        cellsArray.forEach((cellText, i) => {
             const tdEl = td.cloneNode();
             tdEl.textContent = cellText;
-            tdEl.setAttribute("sort", "row");
+            if (i === 0) {
+                // add sort="row" to the first cell in each row
+                tdEl.setAttribute("sort", "row");
+            }
             rowEl.appendChild(tdEl);
         });
         tbody.appendChild(rowEl);
@@ -103,5 +104,29 @@ fetchAllpreadsheets().then(data => {
     table.appendChild(thead);
     table.className = "table sortable";
     table.dataset.toggle = "table";
+    table.dataset.sortable = "true";
     table.appendChild(tbody);
+    function dateSorter(a, b) {
+        return 
+    }
+    $(table).bootstrapTable("destroy").bootstrapTable({
+        columns: [
+            {
+                title: "Last",
+                sortable: true
+            },
+            {
+                title: "First",
+                sortable: true
+            },
+            {
+                title: "Hire Date",
+                sortable: true
+            },
+            {
+                title: "Salary",
+                sortable: true
+            }
+        ]
+    });
 });
