@@ -1,0 +1,2 @@
+/*O_o*/
+google.visualization.Query.setResponse({"version":"0.6","reqId":"0","status":"ok","sig":"208394515","table":{"cols":[{"id":"A","label":"hire date","type":"date","pattern":"m/d/yyyy"}],"rows":[{"c":[{"v":"Date(2020,1,22)","f":"2/22/2020"}]},{"c":[{"v":"Date(2011,8,12)","f":"9/12/2011"}]},{"c":[{"v":"Date(2018,10,6)","f":"11/6/2018"}]},{"c":[{"v":"Date(2016,9,23)","f":"10/23/2016"}]},{"c":[{"v":"Date(2019,0,1)","f":"1/1/2019"}]}],"parsedNumHeaders":1}});

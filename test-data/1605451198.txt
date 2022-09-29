@@ -1,0 +1,2 @@
+/*O_o*/
+google.visualization.Query.setResponse({"version":"0.6","reqId":"0","status":"ok","sig":"290123132","table":{"cols":[{"id":"A","label":"salary","type":"number","pattern":"General"}],"rows":[{"c":[{"v":80000.0,"f":"80000"}]},{"c":[{"v":90000.0,"f":"90000"}]},{"c":[{"v":110000.0,"f":"110000"}]},{"c":[{"v":70000.0,"f":"70000"}]},{"c":[{"v":55000.0,"f":"55000"}]}],"parsedNumHeaders":1}});

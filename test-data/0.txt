@@ -1,0 +1,2 @@
+/*O_o*/
+google.visualization.Query.setResponse({"version":"0.6","reqId":"0","status":"ok","sig":"2041401357","table":{"cols":[{"id":"A","label":"","type":"string"},{"id":"B","label":"","type":"string"}],"rows":[{"c":[{"v":"first"},{"v":"last"}]},{"c":[{"v":"aa"},{"v":"z"}]},{"c":[{"v":"cc"},{"v":"aaac"}]},{"c":[{"v":"bb"},{"v":"z"}]},{"c":[{"v":"cc"},{"v":"aaab"}]},{"c":[{"v":"dd"},{"v":"z"}]}],"parsedNumHeaders":0}});
