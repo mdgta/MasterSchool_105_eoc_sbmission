@@ -7,8 +7,6 @@ const gids = ["0", "1574569648", "1605451198"];
 
 // TODO your code here
 
-
-
 async function fetchSpreadsheet(gidIndex) {
 	const req = await fetch(dataURLBase + id + dataURLEnd + gids[gidIndex]);
 	const text = await req.text();
@@ -45,93 +43,74 @@ fetchAllpreadsheets().then(data => {
 		}
 		return 0;
 	}
-	const tableData = [],
-		table = document.querySelector("#employees"),
-		tbody = document.createElement("tbody"),
-		tr = document.createElement("tr"),
-		td = document.createElement("td");
+	const tableData = [];
 	// not gonna need this, will be easier to shift and remove than having to keep track of the "relevant" position
 	data.names.table.rows.shift();
-	// add rows to the table body
-	// loop through all the tab data objects in the data array
+	// construct table content array
 	for (const tabName in data) {
 		// current spreadsheet tab response data
 		const tab = data[tabName];
 		// go through all the rows in the tab's table
 		tab.table.rows.forEach((row, i) => {
 			// add a row array
-			if (tabName === "names") {
-				tableData.push([]);
-			}
 			// go through all the cells in the current tab's current row
-			row.c.reverse().map(cellContent => {
-				// make a <td>
-				let cell;
+			row.c.map((cellContent, cellIndex) => {
 				// set text content based on what sort of data (i.e. from which stylesheet tab)
 				switch(tabName) {
 					case "names":
-						// plain text
-						cell = cellContent.v;
+						// names as plain text
+						if (cellIndex === 0) {
+							// create new row object
+							tableData.push({});
+							// first name
+							tableData[i].first = cellContent.v;
+						} else {
+							// last name
+							tableData[i].last = cellContent.v;
+						}
 						break;
 					case "hire":
-						// in MMM DD YYYY format, e.g. (Feb 1 2022)
-						/*let dateString = cellContent.v.match(/[\d\,]+/)[0];
-						//dateString = dateString.replace(/\,\d+\,/g, n => "," + (Number(n) + 1) + ",")
-						console.log(dateString);
-						cell = new Date(dateString).toString().substring(4, 15);
-						*/
-						cell = new Date(cellContent.f).toString().substring(4, 15);
+						// e.g. "Feb 1 2022"
+						tableData[i].date = new Date(cellContent.f).toString().substring(4, 15);
 						break;
 					case "salary":
-						// formatted as $1,000,000.00
-						// wasn't really sure how to combine toFixed and toLocaleString in an elegant way so... used an even LESS elegant method lol
-						// (not taken from stack overflow or anything, but on the verge of bleeding out of my eyes rn)
-						//cell = "$" + cellContent.v.toFixed(2).replace(/(?<!\b)\d{3}(?=(?:\d{3})*\.)/g, m => ","+m);
-						cell = new Intl.NumberFormat('en-US', {style: "currency", currency: "USD"}).format(cellContent.v);
+						// e.g. "$1,000,000.00"
+						tableData[i].salary = new Intl.NumberFormat("en-US", {
+							style: "currency",
+							currency: "USD"
+						}).format(cellContent.v);
 						break;
 				}
-				// append to respective row 
-				tableData[i].push(cell);
 			});
 		});
 	}
-	tableData.sort((a, b) => a[0] > b[0]).forEach(cellsArray => {
-		const rowEl = tr.cloneNode();
-		cellsArray.forEach(cellText => {
-			const tdEl = td.cloneNode();
-			tdEl.textContent = cellText;
-			rowEl.appendChild(tdEl);
-		});
-		tbody.appendChild(rowEl);
-	});
-
 	// insert html
-	table.className = "table sortable";
-	table.dataset.toggle = "table";
-	table.dataset.sortable = "true";
-	table.appendChild(tbody);
-	$(table).bootstrapTable("destroy").bootstrapTable({
+	$("#employees").bootstrapTable("destroy").bootstrapTable({
 		columns: [
 			{
 				title: "Last",
+				field: "last",
 				sortable: true,
 				sorter: lastNameSorter
 			},
 			{
 				title: "First",
+				field: "first",
 				sortable: true
 			},
 			{
 				title: "Hire Date",
+				field: "date",
 				sortable: true,
 				sorter: dateSorter
 			},
 			{
 				title: "Salary",
+				field: "salary",
 				sortable: true,
 				sorter: salarySorter
 			}
-		]
+		],
+		data: tableData
 	});
 });
-
