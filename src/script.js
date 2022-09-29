@@ -45,7 +45,7 @@ fetchAllpreadsheets().then(data => {
         }*/
         switch (title) {
             case "Last":
-                //cell.dataset.sorter = "lastNameSorter";
+                cell.dataset.sorter = "lastNameSorter";
                 break;
             case "Hire Date":
                 cell.dataset.sorter = "dateSorter";
@@ -173,9 +173,22 @@ function dateSorter(a, b) {
     const bb = new Date(b).getTime();
     return aa - bb;
 }
-function lastNameSorter(a, b) {
-    console.log("priceSorter");
-    const aa = new Date(a).getTime();
-    const bb = new Date(b).getTime();
-    return aa - bb;
+function lastNameSorter(a, b, rowA, rowB) {
+    console.log("lastNameSorter");
+    if (a === b) {
+        a = rowA[1];
+        b = rowB[1];
+    }
+    /*
+    const aa = a;
+    const bb = b;
+    console.log(aa,bb);
+    return aa !== bb ? aa > bb : rowA[1] > rowB[1];
+    */
+    if (a < b) {
+        return -1;
+    } else if (a > b) {
+        return 1;
+    }
+    return 0;
 }
