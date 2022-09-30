@@ -26,7 +26,6 @@ async function fetchAllpreadsheets() {
 }
 
 fetchAllpreadsheets().then(data => {
-	console.log(data);
 	const tableData = [];
 	// not gonna need this, will be easier to shift and remove than having to keep track of the "relevant" position
 	data[0].table.rows.shift();
@@ -38,31 +37,13 @@ fetchAllpreadsheets().then(data => {
 			// go through all the cells in the current tab's current row
 			row.c.map((cellContent, cellIndex) => {
 				// set text content based on what sort of data (i.e. from which stylesheet tab)
-				switch(tabIndex) {
-					case 0:
-						// names as plain text
-						if (cellIndex === 0) {
-							// create new row object
-							tableData.push({});
-							// first name
-							tableData[i].first = cellContent.v;
-						} else {
-							// last name
-							tableData[i].last = cellContent.v;
-						}
-						break;
-					case 1:
-						// e.g. "Feb 1 2022"
-						tableData[i].date = new Date(cellContent.f).toString().substring(4, 15);
-						break;
-					case 2:
-						// e.g. "$1,000,000.00"
-						tableData[i].salary = new Intl.NumberFormat("en-US", {
-							style: "currency",
-							currency: "USD"
-						}).format(cellContent.v);
-						break;
-				}
+				// create row if doesn't exist yet
+				tableData[i] = tableData[i] || [];
+				// order of rows in the json
+				const fieldsOrderInData = [["first", "last"], ["date"], ["salary"]],
+					fieldName = fieldsOrderInData[tabIndex][cellIndex];
+				// for the date row, place directly a Date instance (easier to work with when using sorter and formatter)
+				tableData[i][fieldName] = tabIndex === 1 ? new Date(cellContent.f) : cellContent.v;
 			});
 		});
 	});
@@ -98,7 +79,10 @@ fetchAllpreadsheets().then(data => {
 				sortable: true,
 				sorter(a, b) {
 					// return timestamp comparison
-					return new Date(a).getTime() - new Date(b).getTime();
+					return a.getTime() - b.getTime();
+				},
+				formatter(val) {
+					return val.toString().substring(4, 15);
 				}
 			},
 			{
@@ -106,8 +90,14 @@ fetchAllpreadsheets().then(data => {
 				field: "salary",
 				sortable: true,
 				sorter(a, b) {
-					// return non-formatted number comparison
-					return a.replace(/[^\d\.]/g, "") - b.replace(/[^\d\.]/g, "");
+					// return number comparison
+					return a - b;
+				},
+				formatter(val) {
+					return new Intl.NumberFormat("en-US", {
+						style: "currency",
+						currency: "USD"
+					}).format(val);
 				}
 			}
 		],
